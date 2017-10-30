@@ -11,7 +11,7 @@
 #define MSG_SD_REMOVED                      "Cartao removido"
 #define MSG_MAIN                            "Menu principal"
 #define MSG_DISABLE_STEPPERS                "Desativar motores"
-#define MSG_AUTO_HOME                       "Pos. de origem"
+#define MSG_AUTO_HOME                       "Ir para origem"
 #define MSG_SET_HOME_OFFSETS                "Def desvio origem"
 #define MSG_SET_ORIGIN                      "Definir origem"
 #define MSG_COOLDOWN                        "Arrefecer"
