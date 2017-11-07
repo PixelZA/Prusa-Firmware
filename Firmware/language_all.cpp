@@ -2691,7 +2691,7 @@ const char * const MSG_SELFTEST_CHECK_Z_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_SELFTEST_CHECK_Z_DE
 };
 
-const char MSG_SELFTEST_COOLING_FAN_EN[] PROGMEM = "Front print fan?";;
+const char MSG_SELFTEST_COOLING_FAN_EN[] PROGMEM = "Front print fan?";
 const char MSG_SELFTEST_COOLING_FAN_CZ[] PROGMEM = "Predni tiskovy vent?";;
 const char MSG_SELFTEST_COOLING_FAN_IT[] PROGMEM = "Vent di stampa ant.?";;
 const char MSG_SELFTEST_COOLING_FAN_ES[] PROGMEM = "Vent. al frente?";;
@@ -2757,7 +2757,7 @@ const char * const MSG_SELFTEST_ERROR_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_SELFTEST_ERROR_DE
 };
 
-const char MSG_SELFTEST_EXTRUDER_FAN_EN[] PROGMEM = "Left hotend fan?";;
+const char MSG_SELFTEST_EXTRUDER_FAN_EN[] PROGMEM = "Left hotend fan?";
 const char MSG_SELFTEST_EXTRUDER_FAN_CZ[] PROGMEM = "Levy vent na trysce?";;
 const char MSG_SELFTEST_EXTRUDER_FAN_IT[] PROGMEM = "Vent SX sull'ugello?";;
 const char MSG_SELFTEST_EXTRUDER_FAN_ES[] PROGMEM = "Vent. en la izg?";;
@@ -2787,7 +2787,7 @@ const char * const MSG_SELFTEST_FAILED_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_SELFTEST_FAILED_DE
 };
 
-const char MSG_SELFTEST_FAN_EN[] PROGMEM = "Fan test";;
+const char MSG_SELFTEST_FAN_EN[] PROGMEM = "Fan test";
 const char MSG_SELFTEST_FAN_CZ[] PROGMEM = "Test ventilatoru";;
 const char MSG_SELFTEST_FAN_IT[] PROGMEM = "Prova del ventilator";;
 const char MSG_SELFTEST_FAN_ES[] PROGMEM = "Test del ventilador";;
@@ -2802,7 +2802,7 @@ const char * const MSG_SELFTEST_FAN_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_SELFTEST_FAN_DE
 };
 
-const char MSG_SELFTEST_FAN_NO_EN[] PROGMEM = "Not spinning";;
+const char MSG_SELFTEST_FAN_NO_EN[] PROGMEM = "Not spinning";
 const char MSG_SELFTEST_FAN_NO_CZ[] PROGMEM = "Netoci se";;
 const char MSG_SELFTEST_FAN_NO_IT[] PROGMEM = "Non si gira";;
 const char MSG_SELFTEST_FAN_NO_ES[] PROGMEM = "Ventilador no gira";;
@@ -2817,7 +2817,7 @@ const char * const MSG_SELFTEST_FAN_NO_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_SELFTEST_FAN_NO_DE
 };
 
-const char MSG_SELFTEST_FAN_YES_EN[] PROGMEM = "Spinning";;
+const char MSG_SELFTEST_FAN_YES_EN[] PROGMEM = "Spinning";
 const char MSG_SELFTEST_FAN_YES_CZ[] PROGMEM = "Toci se";;
 const char MSG_SELFTEST_FAN_YES_IT[] PROGMEM = "Gira";;
 const char MSG_SELFTEST_FAN_YES_ES[] PROGMEM = "Ventilador gira";;
@@ -3313,12 +3313,12 @@ const char * const MSG_TEMPERATURE_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMPERATURE_DE
 };
 
-const char MSG_TEMP_CALIBRATION_EN[] PROGMEM = "Temp. cal.          ";
+const char MSG_TEMP_CALIBRATION_EN[] PROGMEM = "PINDA Temp.cal.";
 const char MSG_TEMP_CALIBRATION_CZ[] PROGMEM = "Tepl. kal.          ";
 const char MSG_TEMP_CALIBRATION_IT[] PROGMEM = "Cal. temp.          ";
 const char MSG_TEMP_CALIBRATION_ES[] PROGMEM = "Cal. temp.          ";
 const char MSG_TEMP_CALIBRATION_PL[] PROGMEM = "Ciepl. kal.         ";
-const char MSG_TEMP_CALIBRATION_DE[] PROGMEM = "Temp Kalib.         ";
+const char MSG_TEMP_CALIBRATION_DE[] PROGMEM = "PINDA Temp.Kal.     ";
 const char * const MSG_TEMP_CALIBRATION_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMP_CALIBRATION_EN,
 	MSG_TEMP_CALIBRATION_CZ,
@@ -3328,12 +3328,12 @@ const char * const MSG_TEMP_CALIBRATION_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMP_CALIBRATION_DE
 };
 
-const char MSG_TEMP_CALIBRATION_DONE_EN[] PROGMEM = "Temperature calibration is finished. Click to continue.";
+const char MSG_TEMP_CALIBRATION_DONE_EN[] PROGMEM = "PINDA Temperature calibration is finished. Click to continue.";
 const char MSG_TEMP_CALIBRATION_DONE_CZ[] PROGMEM = "Teplotni kalibrace dokoncena. Pokracujte stiskem tlacitka.";
 const char MSG_TEMP_CALIBRATION_DONE_IT[] PROGMEM = "Taratura temperatura terminata. Fare click per continuare.";
 const char MSG_TEMP_CALIBRATION_DONE_ES[] PROGMEM = "Calibracon temperatura terminada. Presionar para continuar.";
 const char MSG_TEMP_CALIBRATION_DONE_PL[] PROGMEM = "Cieplna kalibracja zakonczona. Kontynuuj przyciskiem";
-const char MSG_TEMP_CALIBRATION_DONE_DE[] PROGMEM = "Temp. Kalibrierung fertig. Klicken um weiter zu gehen.";
+const char MSG_TEMP_CALIBRATION_DONE_DE[] PROGMEM = "PINDA Temp. Kalibrierung fertig. Klicke um fortzufahren.";
 const char * const MSG_TEMP_CALIBRATION_DONE_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMP_CALIBRATION_DONE_EN,
 	MSG_TEMP_CALIBRATION_DONE_CZ,
@@ -3343,12 +3343,12 @@ const char * const MSG_TEMP_CALIBRATION_DONE_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMP_CALIBRATION_DONE_DE
 };
 
-const char MSG_TEMP_CALIBRATION_OFF_EN[] PROGMEM = "Temp. cal. [OFF]";
+const char MSG_TEMP_CALIBRATION_OFF_EN[] PROGMEM = "PINDA Temp.cal.[OFF]";
 const char MSG_TEMP_CALIBRATION_OFF_CZ[] PROGMEM = "Tepl. kal. [OFF]";
 const char MSG_TEMP_CALIBRATION_OFF_IT[] PROGMEM = "Cal. temp. [OFF]";
 const char MSG_TEMP_CALIBRATION_OFF_ES[] PROGMEM = "Cal. temp. [OFF]";
 const char MSG_TEMP_CALIBRATION_OFF_PL[] PROGMEM = "Ciepl. kal. [OFF]";
-const char MSG_TEMP_CALIBRATION_OFF_DE[] PROGMEM = "Temp. Kal. [OFF]";
+const char MSG_TEMP_CALIBRATION_OFF_DE[] PROGMEM = "PINDA T.Kal.[OFF]";
 const char * const MSG_TEMP_CALIBRATION_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMP_CALIBRATION_OFF_EN,
 	MSG_TEMP_CALIBRATION_OFF_CZ,
@@ -3358,12 +3358,12 @@ const char * const MSG_TEMP_CALIBRATION_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMP_CALIBRATION_OFF_DE
 };
 
-const char MSG_TEMP_CALIBRATION_ON_EN[] PROGMEM = "Temp. cal. [ON]";
+const char MSG_TEMP_CALIBRATION_ON_EN[] PROGMEM = "PINDA Temp.cal. [ON]";
 const char MSG_TEMP_CALIBRATION_ON_CZ[] PROGMEM = "Tepl. kal. [ON]";
 const char MSG_TEMP_CALIBRATION_ON_IT[] PROGMEM = "Cal. temp. [ON]";
 const char MSG_TEMP_CALIBRATION_ON_ES[] PROGMEM = "Cal. temp. [ON]";
 const char MSG_TEMP_CALIBRATION_ON_PL[] PROGMEM = "Ciepl. kal. [ON]";
-const char MSG_TEMP_CALIBRATION_ON_DE[] PROGMEM = "Temp. Kal. [ON]";
+const char MSG_TEMP_CALIBRATION_ON_DE[] PROGMEM = "PINDA T.Kal. [ON]";
 const char * const MSG_TEMP_CALIBRATION_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_TEMP_CALIBRATION_ON_EN,
 	MSG_TEMP_CALIBRATION_ON_CZ,

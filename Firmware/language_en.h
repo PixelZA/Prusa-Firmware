@@ -27,7 +27,7 @@
 #define MSG_NOZZLE1                         "Nozzle2"
 #define MSG_NOZZLE2                         "Nozzle3"
 #define MSG_BED                             "Bed"
-#define(length=14) MSG_FAN_SPEED                       "Fan speed"
+#define(length=14) MSG_FAN_SPEED            "Fan speed"
 #define MSG_FLOW                            "Flow"
 #define MSG_FLOW0                           "Flow 0"
 #define MSG_FLOW1                           "Flow 1"
@@ -52,8 +52,8 @@
 #define MSG_CARD_MENU                       "Print from SD"
 #define MSG_NO_CARD                         "No SD card"
 #define MSG_DWELL                           "Sleep..."
-#define MSG_USERWAIT                        "Wait for user..."
-#define MSG_RESUMING                        "Resuming print"
+#define MSG_USERWAIT						"Wait for user..."
+#define MSG_RESUMING						"Resuming print"
 #define(length=20) MSG_PRINT_ABORTED        "Print aborted"
 #define MSG_NO_MOVE                         "No move."
 #define MSG_KILLED                          "KILLED. "
@@ -178,11 +178,11 @@
 #define MSG_SELFTEST_OK						"Self test OK"
 #define(length=20,lines=1) MSG_LOOSE_PULLEY					"Loose pulley"
 
-#define(length=20) MSG_SELFTEST_FAN					"Fan test";
-#define(length=20) MSG_SELFTEST_COOLING_FAN			"Front print fan?";
-#define(length=20) MSG_SELFTEST_EXTRUDER_FAN			"Left hotend fan?";
-#define MSG_SELFTEST_FAN_YES				"Spinning";
-#define MSG_SELFTEST_FAN_NO					"Not spinning";
+#define(length=20) MSG_SELFTEST_FAN					"Fan test"
+#define(length=20) MSG_SELFTEST_COOLING_FAN			"Front print fan?"
+#define(length=20) MSG_SELFTEST_EXTRUDER_FAN			"Left hotend fan?"
+#define MSG_SELFTEST_FAN_YES				"Spinning"
+#define MSG_SELFTEST_FAN_NO					"Not spinning"
 
 #define(length=20) MSG_STATS_TOTALFILAMENT	"Total filament :"
 #define(length=20) MSG_STATS_TOTALPRINTTIME "Total print time :"
@@ -204,7 +204,7 @@
 #define MSG_HOMEYZ_PROGRESS                 "Calibrating Z"
 #define MSG_HOMEYZ_DONE		                "Calibration done"
 
-#define(length=17,lines=1) MSG_SHOW_END_STOPS					"Show end stops"
+#define(length=17,lines=1) MSG_SHOW_END_STOPS	"Show end stops"
 #define MSG_CALIBRATE_BED					"Calibrate XYZ"
 #define MSG_CALIBRATE_BED_RESET				"Reset XYZ calibr."
 
@@ -289,10 +289,11 @@
 #define(length=17, lines=1) MSG_CALIBRATION_PINDA_MENU			"Temp. calibration"
 #define(length=20, lines=4) MSG_PINDA_NOT_CALIBRATED			"Temperature calibration has not been run yet"
 #define(length=20, lines=1) MSG_PINDA_PREHEAT					"PINDA Heating"
-#define(length=20, lines=1) MSG_TEMP_CALIBRATION				"Temp. cal.          "
-#define(length=20, lines=4) MSG_TEMP_CALIBRATION_DONE			"Temperature calibration is finished. Click to continue."
-#define(length=20, lines=1) MSG_TEMP_CALIBRATION_ON				"Temp. cal. [ON]"
-#define(length=20, lines=1) MSG_TEMP_CALIBRATION_OFF			"Temp. cal. [OFF]"
+#define(length=20, lines=1) MSG_TEMP_CALIBRATION			"PINDA Temp.cal."
+#define(length=20, lines=5) MSG_TEMP_CALIBRATION_DONE		"PINDA Temperature calibration is finished. Click to continue."
+#define(length=20, lines=1) MSG_TEMP_CALIBRATION_ON			"PINDA Temp.cal. [ON]"
+#define(length=20, lines=1) MSG_TEMP_CALIBRATION_OFF		"PINDA Temp.cal.[OFF]"
+
 #define(length=20, lines=1) MSG_PREPARE_FILAMENT				"Prepare new filament"
 #define(length=19, lines=1) MSG_ALL								"All"
 #define(length=19, lines=1) MSG_USED							"Used during print"
