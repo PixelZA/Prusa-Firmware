@@ -96,11 +96,6 @@ int8_t SDscrool = 0;
 
 int8_t SilentModeMenu = 0;
 
-// FILAMENT_RUNOUT_SENSOR
-/*#ifdef FILAMENT_RUNOUT_SENSOR
-static void lcd_fil_runout_status_set();
-#endif*/
-// end FILAMENT_RUNOUT_SENSOR
 #ifdef SNMM
 uint8_t snmm_extruder = 0;
 #endif
@@ -3480,16 +3475,22 @@ static void lcd_fil_runout_status_set() {
 		fil_runout_status = 1;
 		FIL_RUNOUT_INVERTING = 0;
 		ENDSTOPPULLUP_FIL_RUNOUT = 0;
+		fil_runout_status_set = fil_runout_status;
+		FIL_RUNOUT_INVERTING_SET = FIL_RUNOUT_INVERTING;
+		ENDSTOPPULLUP_FIL_RUNOUT_SET = ENDSTOPPULLUP_FIL_RUNOUT;
 		break;
 	case 1:
 		fil_runout_status = 2;
 		FIL_RUNOUT_INVERTING = 1;
 		ENDSTOPPULLUP_FIL_RUNOUT = 1;
+		fil_runout_status_set = fil_runout_status;
+		FIL_RUNOUT_INVERTING_SET = FIL_RUNOUT_INVERTING;
+		ENDSTOPPULLUP_FIL_RUNOUT_SET = ENDSTOPPULLUP_FIL_RUNOUT;
 		break;
 	case 2:
 		fil_runout_status = 0;
-		FIL_RUNOUT_INVERTING = 0;
-		ENDSTOPPULLUP_FIL_RUNOUT = 0;
+		FIL_RUNOUT_INVERTING = 1;
+		ENDSTOPPULLUP_FIL_RUNOUT = 1;
 		break;
 	default: fil_runout_status = 0; break;
 	}
@@ -3501,16 +3502,11 @@ static void lcd_fil_runout_status_set() {
 static void lcd_fil_runout_status_tune() {
 	switch (fil_runout_status) {
 	case 0:
-		fil_runout_status = 1;
-		FIL_RUNOUT_INVERTING = 0;
-		ENDSTOPPULLUP_FIL_RUNOUT = 0;
+		fil_runout_status = fil_runout_status_set;
+		FIL_RUNOUT_INVERTING = FIL_RUNOUT_INVERTING_SET;
+		ENDSTOPPULLUP_FIL_RUNOUT = ENDSTOPPULLUP_FIL_RUNOUT_SET;
 		break;
 	case 1:
-		fil_runout_status = 2;
-		FIL_RUNOUT_INVERTING = 1;
-		ENDSTOPPULLUP_FIL_RUNOUT = 1;
-		break;
-	case 2:
 		fil_runout_status = 0;
 		FIL_RUNOUT_INVERTING = 0;
 		ENDSTOPPULLUP_FIL_RUNOUT = 0;
