@@ -3564,7 +3564,7 @@ void process_commands()
         case 0:
           {
             mbl.z_values[0][0] += offset;
-            SERIAL_ECHOPGM("FrontLeft a =");
+            SERIAL_ECHOPGM("FrontLeft  a =");
             SERIAL_ECHO(correction+0);
             SERIAL_ECHOLNPGM(" microns.");
           }          
@@ -3588,7 +3588,7 @@ void process_commands()
         case 3:
           {
             mbl.z_values[1][2] += offset; 
-            SERIAL_ECHOPGM("MidRight  d =");
+            SERIAL_ECHOPGM("MidRight   d =");
             SERIAL_ECHO(correction+0);
             SERIAL_ECHOLNPGM(" microns.");
           }
@@ -3596,7 +3596,7 @@ void process_commands()
         case 4:
           {
             mbl.z_values[2][2] += offset; 
-            SERIAL_ECHOPGM("RearRight e =");
+            SERIAL_ECHOPGM("RearRight  e =");
             SERIAL_ECHO(correction+0);
             SERIAL_ECHOLNPGM(" microns.");
           }
@@ -3612,7 +3612,7 @@ void process_commands()
         case 6:
           {
             mbl.z_values[2][0] += offset; 
-            SERIAL_ECHOPGM("RearLeft g =");
+            SERIAL_ECHOPGM("RearLeft   g =");
             SERIAL_ECHO(correction+0);
             SERIAL_ECHOLNPGM(" microns.");
           }
