@@ -202,7 +202,7 @@
 #define MSG_HOMEYZ_PROGRESS					"Kalibriere Z"
 #define MSG_HOMEYZ_DONE						"Kalibrierung OK"
 
-#define MSG_SHOW_END_STOPS					"Enschalter Status"
+#define MSG_SHOW_END_STOPS					"Endstopp-status"
 #define MSG_CALIBRATE_BED					"Kalibrierung XYZ"
 #define MSG_CALIBRATE_BED_RESET				"Reset XYZ Kalibr."
 

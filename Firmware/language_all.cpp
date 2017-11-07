@@ -2991,7 +2991,7 @@ const char MSG_SHOW_END_STOPS_CZ[] PROGMEM = "Stav konc. spin.";
 const char MSG_SHOW_END_STOPS_IT[] PROGMEM = "Stato finecorsa";
 const char MSG_SHOW_END_STOPS_ES[] PROGMEM = "Ensena tope final";
 const char MSG_SHOW_END_STOPS_PL[] PROGMEM = "Pokaz krancowki";
-const char MSG_SHOW_END_STOPS_DE[] PROGMEM = "Enschalter Status";
+const char MSG_SHOW_END_STOPS_DE[] PROGMEM = "Endstopp-status";
 const char * const MSG_SHOW_END_STOPS_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_SHOW_END_STOPS_EN,
 	MSG_SHOW_END_STOPS_CZ,
