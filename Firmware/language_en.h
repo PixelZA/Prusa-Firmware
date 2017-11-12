@@ -180,9 +180,9 @@
 
 #define(length=20) MSG_SELFTEST_FAN					"Fan test"
 #define(length=20) MSG_SELFTEST_COOLING_FAN			"Front print fan?"
-#define(length=20) MSG_SELFTEST_EXTRUDER_FAN			"Left hotend fan?"
-#define MSG_SELFTEST_FAN_YES				"Spinning"
-#define MSG_SELFTEST_FAN_NO					"Not spinning"
+#define(length=20) MSG_SELFTEST_EXTRUDER_FAN		"Left hotend fan?"
+#define(length=19) MSG_SELFTEST_FAN_YES				"Spinning"
+#define(length=19) MSG_SELFTEST_FAN_NO				"Not spinning"
 
 #define(length=20) MSG_STATS_TOTALFILAMENT	"Total filament :"
 #define(length=20) MSG_STATS_TOTALPRINTTIME "Total print time :"
@@ -342,6 +342,7 @@
 #define(lenght=20, lines=2) MSG_PLA_FILAMENT_LOADED				"Is PLA filament loaded?"
 #define(lenght=20, lines=4) MSG_PLEASE_LOAD_PLA					"Please load PLA filament first."
 #define(length=20, lines=8) MSG_FILE_CNT						"Some files will not be sorted. Max. No. of files in 1 folder for sorting is 100."
+#define(length=25, lines=1) MSG_M117_V2_CALIBRATION				"M117 First layer cal."
 #define(length=20) MSG_FIL_RUNOUT_STATUS_OFF					"Fil.RS      [OFF]"
 #define(length=20) MSG_FIL_RUNOUT_STATUS_VCC					"Fil.RS [S to VCC]"
 #define(length=20) MSG_FIL_RUNOUT_STATUS_GND					"Fil.RS [S to GND]"
