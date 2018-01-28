@@ -156,7 +156,7 @@ class MarlinSerial //: public Stream
                 if (UCSR1A & (1<<FE1)) {
                     // Characters received with the framing errors will be ignored.
                     // The temporary variable "c" was made volatile, so the compiler does not optimize this out.
-                    volatile unsigned char c = UDR1;
+                    (void)(*(char *)UDR1);
                 } else {
                     unsigned char c  =  UDR1;
                     int i = (unsigned int)(rx_buffer.head + 1) % RX_BUFFER_SIZE;
