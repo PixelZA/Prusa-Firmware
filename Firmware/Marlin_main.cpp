@@ -604,7 +604,7 @@ void crashdet_disable()
 {
 //	MYSERIAL.println("crashdet_disable"); 
 	tmc2130_sg_stop_on_crash = false;
-	tmc2130_sg_crash = false;
+	tmc2130_sg_crash = 0;
 	eeprom_update_byte((uint8_t*)EEPROM_CRASH_DET, 0x00); 
 	CrashDetectMenu = 0;
 }
@@ -628,10 +628,12 @@ void crashdet_stop_and_save_print2()
 	cmdqueue_reset(); //empty cmdqueue
 	card.sdprinting = false;
 	card.closefile();
+  // Reset and re-enable the stepper timer just before the global interrupts are enabled.
+  st_reset_timer();
 	sei();
 }
 
-void crashdet_detected()
+void crashdet_detected(uint8_t mask)
 {
 //	printf("CRASH_DETECTED");
 /*	while (!is_buffer_empty())
@@ -644,11 +646,17 @@ void crashdet_detected()
 	lcd_update_enable(true);
 	lcd_implementation_clear();
 	lcd_update(2);
-    
-    // Increment crash counter
-    uint8_t crash_count = eeprom_read_byte((uint8_t*)EEPROM_CRASH_COUNT);
-    crash_count++;
-    eeprom_update_byte((uint8_t*)EEPROM_CRASH_COUNT, crash_count);
+
+	if (mask & X_AXIS_MASK)
+	{
+		eeprom_update_byte((uint8_t*)EEPROM_CRASH_COUNT_X, eeprom_read_byte((uint8_t*)EEPROM_CRASH_COUNT_X) + 1);
+		eeprom_update_word((uint16_t*)EEPROM_CRASH_COUNT_X_TOT, eeprom_read_word((uint16_t*)EEPROM_CRASH_COUNT_X_TOT) + 1);
+	}
+	if (mask & Y_AXIS_MASK)
+	{
+		eeprom_update_byte((uint8_t*)EEPROM_CRASH_COUNT_Y, eeprom_read_byte((uint8_t*)EEPROM_CRASH_COUNT_Y) + 1);
+		eeprom_update_word((uint16_t*)EEPROM_CRASH_COUNT_Y_TOT, eeprom_read_word((uint16_t*)EEPROM_CRASH_COUNT_Y_TOT) + 1);
+	}
     
 #ifdef AUTOMATIC_RECOVERY_AFTER_CRASH
     bool yesno = true;
@@ -660,8 +668,7 @@ void crashdet_detected()
 	lcd_setstatuspgm(MSG_CRASH_DETECTED);
 	if (yesno)
 	{
-		enquecommand_P(PSTR("G28 X"));
-		enquecommand_P(PSTR("G28 Y"));
+		enquecommand_P(PSTR("G28 X Y"));
 		enquecommand_P(PSTR("CRASH_RECOVER"));
 	}
 	else
@@ -683,6 +690,13 @@ void crashdet_cancel()
 	tmc2130_sg_stop_on_crash = true;
 }
 
+void failstats_reset_print()
+{
+	eeprom_update_byte((uint8_t *)EEPROM_CRASH_COUNT_X, 0);
+	eeprom_update_byte((uint8_t *)EEPROM_CRASH_COUNT_Y, 0);
+	eeprom_update_byte((uint8_t *)EEPROM_FERROR_COUNT, 0);
+	eeprom_update_byte((uint8_t *)EEPROM_POWER_COUNT, 0);
+}
 
 
 #ifdef MESH_BED_LEVELING
@@ -718,10 +732,16 @@ void factory_reset(char level, bool quiet)
 			eeprom_update_dword((uint32_t *)EEPROM_TOTALTIME, 0);
 			eeprom_update_dword((uint32_t *)EEPROM_FILAMENTUSED, 0);
 
-			eeprom_update_byte((uint8_t *)EEPROM_POWER_COUNT, 0);
-			eeprom_update_byte((uint8_t *)EEPROM_CRASH_COUNT, 0);
+			eeprom_update_byte((uint8_t *)EEPROM_CRASH_COUNT_X, 0);
+			eeprom_update_byte((uint8_t *)EEPROM_CRASH_COUNT_Y, 0);
 			eeprom_update_byte((uint8_t *)EEPROM_FERROR_COUNT, 0);
-			
+			eeprom_update_byte((uint8_t *)EEPROM_POWER_COUNT, 0);
+
+			eeprom_update_word((uint16_t *)EEPROM_CRASH_COUNT_X_TOT, 0);
+			eeprom_update_word((uint16_t *)EEPROM_CRASH_COUNT_Y_TOT, 0);
+			eeprom_update_word((uint16_t *)EEPROM_FERROR_COUNT_TOT, 0);
+			eeprom_update_word((uint16_t *)EEPROM_POWER_COUNT_TOT, 0);
+
 			lcd_menu_statistics();
             
 			break;
@@ -889,10 +909,22 @@ void factory_reset()
 void show_fw_version_warnings() {
 	if (FW_DEV_VERSION == FW_VERSION_GOLD || FW_DEV_VERSION == FW_VERSION_RC) return;
 	switch (FW_DEV_VERSION) {
-	case(FW_VERSION_ALPHA): lcd_show_fullscreen_message_and_wait_P(MSG_FW_VERSION_ALPHA); break;
-	case(FW_VERSION_BETA): lcd_show_fullscreen_message_and_wait_P(MSG_FW_VERSION_BETA); break;
-	case(FW_VERSION_RC): lcd_show_fullscreen_message_and_wait_P(MSG_FW_VERSION_RC); break;
-	case(FW_VERSION_DEBUG): lcd_show_fullscreen_message_and_wait_P(MSG_FW_VERSION_DEBUG); break;
+	case(FW_VERSION_ALPHA):   lcd_show_fullscreen_message_and_wait_P(MSG_FW_VERSION_ALPHA);   break;
+	case(FW_VERSION_BETA):    lcd_show_fullscreen_message_and_wait_P(MSG_FW_VERSION_BETA);    break;
+  case(FW_VERSION_DEVEL):
+	case(FW_VERSION_DEBUG):
+    lcd_update_enable(false);
+    lcd_implementation_clear();
+  #if FW_DEV_VERSION == FW_VERSION_DEVEL
+    lcd_print_at_PGM(0, 0, PSTR("Development build !!"));
+  #else
+    lcd_print_at_PGM(0, 0, PSTR("Debbugging build !!!"));
+  #endif
+    lcd_print_at_PGM(0, 1, PSTR("May destroy printer!"));
+    lcd_print_at_PGM(0, 2, PSTR("ver ")); lcd_printPGM(PSTR(FW_VERSION_FULL));
+    lcd_print_at_PGM(0, 3, PSTR(FW_REPOSITORY));
+    lcd_wait_for_click();
+    break;
 	default: lcd_show_fullscreen_message_and_wait_P(MSG_FW_VERSION_UNKNOWN); break;
 	}
 	lcd_update_enable(true);
@@ -978,7 +1010,7 @@ void setup()
 	SERIAL_ECHOLN((int)sizeof(block_t)*BLOCK_BUFFER_SIZE);
 	//lcd_update_enable(false); // why do we need this?? - andre
 	// loads data from EEPROM if available else uses defaults (and resets step acceleration rate)
-	Config_RetrieveSettings(EEPROM_OFFSET);
+	bool previous_settings_retrieved = Config_RetrieveSettings(EEPROM_OFFSET);
 	SdFatUtil::set_stack_guard(); //writes magic number at the end of static variables to protect against overwriting static memory by stack
 
 	tp_init();    // Initialize temperature loop
@@ -1078,12 +1110,14 @@ void setup()
 	// Force SD card update. Otherwise the SD card update is done from loop() on card.checkautostart(false), 
 	// but this times out if a blocking dialog is shown in setup().
 	card.initsd();
-	if (eeprom_read_byte((uint8_t*)EEPROM_POWER_COUNT) == 0xff)
-		eeprom_write_byte((uint8_t*)EEPROM_POWER_COUNT, 0);
-	if (eeprom_read_byte((uint8_t*)EEPROM_CRASH_COUNT) == 0xff)
-		eeprom_write_byte((uint8_t*)EEPROM_CRASH_COUNT, 0);
-	if (eeprom_read_byte((uint8_t*)EEPROM_FERROR_COUNT) == 0xff)
-		eeprom_write_byte((uint8_t*)EEPROM_FERROR_COUNT, 0);
+	if (eeprom_read_byte((uint8_t*)EEPROM_POWER_COUNT) == 0xff) eeprom_write_byte((uint8_t*)EEPROM_POWER_COUNT, 0);
+	if (eeprom_read_byte((uint8_t*)EEPROM_CRASH_COUNT_X) == 0xff) eeprom_write_byte((uint8_t*)EEPROM_CRASH_COUNT_X, 0);
+	if (eeprom_read_byte((uint8_t*)EEPROM_CRASH_COUNT_Y) == 0xff) eeprom_write_byte((uint8_t*)EEPROM_CRASH_COUNT_Y, 0);
+	if (eeprom_read_byte((uint8_t*)EEPROM_FERROR_COUNT) == 0xff) eeprom_write_byte((uint8_t*)EEPROM_FERROR_COUNT, 0);
+	if (eeprom_read_word((uint16_t*)EEPROM_POWER_COUNT_TOT) == 0xffff) eeprom_write_word((uint16_t*)EEPROM_POWER_COUNT_TOT, 0);
+	if (eeprom_read_word((uint16_t*)EEPROM_CRASH_COUNT_X_TOT) == 0xffff) eeprom_write_word((uint16_t*)EEPROM_CRASH_COUNT_X_TOT, 0);
+	if (eeprom_read_word((uint16_t*)EEPROM_CRASH_COUNT_Y_TOT) == 0xffff) eeprom_write_word((uint16_t*)EEPROM_CRASH_COUNT_Y_TOT, 0);
+	if (eeprom_read_word((uint16_t*)EEPROM_FERROR_COUNT_TOT) == 0xffff) eeprom_write_word((uint16_t*)EEPROM_FERROR_COUNT_TOT, 0);
 #ifdef SNMM
 	if (eeprom_read_dword((uint32_t*)EEPROM_BOWDEN_LENGTH) == 0x0ffffffff) { //bowden length used for SNMM
 	  int _z = BOWDEN_LENGTH;
@@ -1137,6 +1171,8 @@ void setup()
   KEEPALIVE_STATE(PAUSED_FOR_USER);
 
   show_fw_version_warnings();
+
+  if (!previous_settings_retrieved) lcd_show_fullscreen_message_and_wait_P(MSG_DEFAULT_SETTINGS_LOADED); //if EEPROM version was changed, inform user that default setting were loaded
 
   if (eeprom_read_byte((uint8_t*)EEPROM_WIZARD_ACTIVE) == 1) {
 	  lcd_wizard(0);
@@ -1217,7 +1253,7 @@ void setup()
 
 #ifdef PAT9125
 void fsensor_init() {
-	int pat9125 = pat9125_init(PAT9125_XRES, PAT9125_YRES);
+	int pat9125 = pat9125_init();
 	printf_P(PSTR("PAT9125_init:%d\n"), pat9125);
 	uint8_t fsensor = eeprom_read_byte((uint8_t*)EEPROM_FSENSOR);
 	if (!pat9125)
@@ -1409,8 +1445,12 @@ void loop()
     #endif //SDSUPPORT
 
     if (! cmdbuffer_front_already_processed && buflen)
-	  {
-		    cli();
+    {
+      // ptr points to the start of the block currently being processed.
+      // The first character in the block is the block type.      
+      char *ptr = cmdbuffer + bufindr;
+      if (*ptr == CMDBUFFER_CURRENT_TYPE_SDCARD) {
+        // To support power panic, move the lenght of the command on the SD card to a planner buffer.
         union {
           struct {
               char lo;
@@ -1419,14 +1459,28 @@ void loop()
           uint16_t value;
         } sdlen;
         sdlen.value = 0;
-		    if (CMDBUFFER_CURRENT_TYPE == CMDBUFFER_CURRENT_TYPE_SDCARD) {
-			      sdlen.lohi.lo = cmdbuffer[bufindr + 1];
-            sdlen.lohi.hi = cmdbuffer[bufindr + 2];
+        {
+          // This block locks the interrupts globally for 3.25 us,
+          // which corresponds to a maximum repeat frequency of 307.69 kHz.
+          // This blocking is safe in the context of a 10kHz stepper driver interrupt
+          // or a 115200 Bd serial line receive interrupt, which will not trigger faster than 12kHz.
+          cli();
+          // Reset the command to something, which will be ignored by the power panic routine,
+          // so this buffer length will not be counted twice.
+          *ptr ++ = CMDBUFFER_CURRENT_TYPE_TO_BE_REMOVED;
+          // Extract the current buffer length.
+          sdlen.lohi.lo = *ptr ++;
+          sdlen.lohi.hi = *ptr;
+          // and pass it to the planner queue.
+          planner_add_sd_length(sdlen.value);
+          sei();
         }
-	      cmdqueue_pop_front();
-		    planner_add_sd_length(sdlen.value);
-		    sei();
-	  }
+      }
+      // Now it is safe to release the already processed command block. If interrupted by the power panic now,
+      // this block's SD card length will not be counted twice as its command type has been replaced 
+      // by CMDBUFFER_CURRENT_TYPE_TO_BE_REMOVED.
+      cmdqueue_pop_front();
+    }
 	host_keepalive();
   }
 }
@@ -1442,9 +1496,15 @@ void loop()
 	tmc2130_check_overtemp();
 	if (tmc2130_sg_crash)
 	{
-		tmc2130_sg_crash = false;
+		uint8_t crash = tmc2130_sg_crash;
+		tmc2130_sg_crash = 0;
 //		crashdet_stop_and_save_print();
-		enquecommand_P((PSTR("CRASH_DETECTED")));
+		switch (crash)
+		{
+		case 1: enquecommand_P((PSTR("CRASH_DETECTEDX"))); break;
+		case 2: enquecommand_P((PSTR("CRASH_DETECTEDY"))); break;
+		case 3: enquecommand_P((PSTR("CRASH_DETECTEDXY"))); break;
+		}
 	}
 #endif //TMC2130
 
@@ -1975,11 +2035,14 @@ void force_high_power_mode(bool start_high_power_section) {
 	if (silent == 1) {
 		//we are in silent mode, set to normal mode to enable crash detection
 
-
+    // Wait for the planner queue to drain and for the stepper timer routine to reach an idle state.
 		st_synchronize();
 		cli();
 		tmc2130_mode = (start_high_power_section == true) ? TMC2130_MODE_NORMAL : TMC2130_MODE_SILENT;
 		tmc2130_init();
+    // We may have missed a stepper timer interrupt due to the time spent in the tmc2130_init() routine.
+    // Be safe than sorry, reset the stepper timer before re-enabling interrupts.
+    st_reset_timer();
 		sei();
 		digipot_init();
 	}
@@ -2242,7 +2305,12 @@ void process_commands()
   }
 
   else if(code_seen("CRASH_DETECTED"))
-	  crashdet_detected();
+  {
+	  uint8_t mask = 0;
+	  if (code_seen("X")) mask |= X_AXIS_MASK;
+	  if (code_seen("Y")) mask |= Y_AXIS_MASK;
+	  crashdet_detected(mask);
+  }
   else if(code_seen("CRASH_RECOVER"))
 	  crashdet_recover();
   else if(code_seen("CRASH_CANCEL"))
@@ -3075,6 +3143,9 @@ void process_commands()
 #ifdef PINDA_THERMISTOR
 		if (true)
 		{
+			lcd_show_fullscreen_message_and_wait_P(MSG_TEMP_CAL_WARNING);
+			bool result = lcd_show_fullscreen_message_yes_no_and_wait_P(MSG_STEEL_SHEET_CHECK, false, false);
+			if(result) lcd_show_fullscreen_message_and_wait_P(MSG_REMOVE_STEEL_SHEET);
 			if (!(axis_known_position[X_AXIS] && axis_known_position[Y_AXIS] && axis_known_position[Z_AXIS])) {
 				// We don't know where we are! HOME!
 				// Push the commands to the front of the message queue in the reverse order!
@@ -3830,13 +3901,8 @@ void process_commands()
 		eeprom_update_byte((unsigned char *)EEPROM_FARM_MODE, farm_mode);
 		lcd_update(2);
 		break;
-
-
-
-
-
-
-
+	default:
+		printf_P(PSTR("Unknown G code: %s \n"), cmdbuffer + bufindr + CMDHDRSIZE);
     }
   } // end if(code_seen('G'))
 
@@ -3847,7 +3913,8 @@ void process_commands()
 	   
 	 /*for (++strchr_pointer; *strchr_pointer == ' ' || *strchr_pointer == '\t'; ++strchr_pointer);*/
 	  if (*(strchr_pointer+index) < '0' || *(strchr_pointer+index) > '9') {
-		  SERIAL_ECHOLNPGM("Invalid M code");
+		  printf_P(PSTR("Invalid M code: %s \n"), cmdbuffer + bufindr + CMDHDRSIZE);
+
 	  } else
     switch((int)code_value())
     {
@@ -3941,6 +4008,8 @@ void process_commands()
       card.openFile(strchr_pointer + 4,true);
       break;
     case 24: //M24 - Start SD print
+	  if (!card.paused)
+		failstats_reset_print();
       card.startFileprint();
       starttime=millis();
 	  break;
@@ -5684,6 +5753,10 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 			//plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], 3500 / 60, active_extruder);
             
             target[E_AXIS] -= FILAMENTCHANGE_FINALRETRACT;
+            st_synchronize();
+            uint8_t tmc2130_current_r_bckp = tmc2130_current_r[E_AXIS];
+            tmc2130_set_current_r(E_AXIS, TMC2130_UNLOAD_CURRENT_R);
+
             target[E_AXIS] -= 45;
             plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], 5200 / 60, active_extruder);
             st_synchronize();
@@ -5694,6 +5767,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], 1000 / 60, active_extruder);
             st_synchronize();
             
+            tmc2130_set_current_r(E_AXIS, tmc2130_current_r_bckp);
 #endif // SNMM
 
 
@@ -5719,7 +5793,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 			WRITE(BEEPER, LOW);
 
 			KEEPALIVE_STATE(PAUSED_FOR_USER);
-			lcd_change_fil_state = lcd_show_fullscreen_message_yes_no_and_wait_P(MSG_UNLOAD_SUCCESSFULL, false, true);
+			lcd_change_fil_state = lcd_show_fullscreen_message_yes_no_and_wait_P(MSG_UNLOAD_SUCCESSFUL, false, true);
 			if (lcd_change_fil_state == 0) lcd_show_fullscreen_message_and_wait_P(MSG_CHECK_IDLER);
 			//lcd_return_to_status();
 			lcd_update_enable(true);
@@ -5927,7 +6001,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		if(lcd_commands_type == 0)	lcd_commands_type = LCD_COMMAND_LONG_PAUSE_RESUME;
 	}
 	break;
-            
+
 #ifdef LIN_ADVANCE
     case 900: // M900: Set LIN_ADVANCE options.
         gcode_M900();
@@ -6101,7 +6175,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		lcd_setstatuspgm(MSG_UNLOADING_FILAMENT); 
 
 //		extr_unload2();
-
+		
 		current_position[E_AXIS] -= 45;
 		plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], 5200 / 60, active_extruder);
         st_synchronize();
@@ -6148,7 +6222,8 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
       gcode_LastN = Stopped_gcode_LastN;
       FlushSerialRequestResend();
     break;
-	default: SERIAL_ECHOLNPGM("Invalid M code.");
+	default: 
+		printf_P(PSTR("Unknown M code: %s \n"), cmdbuffer + bufindr + CMDHDRSIZE);
     }
 	
   } // end if(code_seen('M')) (end of M codes)
@@ -7510,9 +7585,8 @@ void uvlo_()
     disable_z();
     
     // Increment power failure counter
-    uint8_t power_count = eeprom_read_byte((uint8_t*)EEPROM_POWER_COUNT);
-    power_count++;
-    eeprom_update_byte((uint8_t*)EEPROM_POWER_COUNT, power_count);
+	eeprom_update_byte((uint8_t*)EEPROM_POWER_COUNT, eeprom_read_byte((uint8_t*)EEPROM_POWER_COUNT) + 1);
+	eeprom_update_word((uint16_t*)EEPROM_POWER_COUNT_TOT, eeprom_read_word((uint16_t*)EEPROM_POWER_COUNT_TOT) + 1);
     
 		SERIAL_ECHOLNPGM("UVLO - end");
 		MYSERIAL.println(millis() - time_start);
@@ -7557,6 +7631,8 @@ void setup_fan_interrupt() {
 	EIMSK |= (1 << 7);
 }
 
+// The fan interrupt is triggered at maximum 325Hz (may be a bit more due to component tollerances),
+// and it takes 4.24 us to process (the interrupt invocation overhead not taken into account).
 ISR(INT7_vect) {
 	//measuring speed now works for fanSpeed > 18 (approximately), which is sufficient because MIN_PRINT_FAN_SPEED is higher
 
@@ -7914,6 +7990,8 @@ void stop_and_save_print_to_ram(float z_move, float e_move)
 	card.sdprinting = false;
 //	card.closefile();
 	saved_printing = true;
+  // We may have missed a stepper timer interrupt. Be safe than sorry, reset the stepper timer before re-enabling interrupts.
+  st_reset_timer();
 	sei();
 	if ((z_move != 0) || (e_move != 0)) { // extruder or z move
 #if 1
