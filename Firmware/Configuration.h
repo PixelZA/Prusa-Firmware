@@ -11,7 +11,7 @@
 #define FW_COMMIT_NR   328
 // FW_VERSION_UNKNOWN means this is an unofficial build.
 // The firmware should only be checked into github with this symbol.
-#define FW_DEV_VERSION FW_VERSION_GOLD
+#define FW_DEV_VERSION FW_VERSION_RC
 #define FW_REPOSITORY "Prusa3D/MK25"
 #define FW_VERSION_FULL FW_VERSION "-" STR(FW_COMMIT_NR)
 
