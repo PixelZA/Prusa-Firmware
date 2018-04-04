@@ -86,7 +86,7 @@ inline bool parse_version(const char *str, uint16_t version[4])
             version[3] = FIRMWARE_REVISION_ALPHA;
         else if (n == strlen_P(STR_REVISION_BETA) && strncmp_P(p, STR_REVISION_BETA, n) == 0)
             version[3] = FIRMWARE_REVISION_BETA;
-        else if ((n == 2 || n == 3) && p[0] == 'r' && p[1] == 'c') {
+        else if ((n == 2 || n == 3) && (p[0] == 'r' || p[0] == 'R') && (p[1] == 'c' || p[1] == 'C')) {
             if (n == 2)
                 version[3] = FIRMWARE_REVISION_RC;
             else {
@@ -116,12 +116,22 @@ inline bool parse_version(const char *str, uint16_t version[4])
 inline bool strncmp_PP(const char *p1, const char *p2, uint8_t n)
 {
     for (; n > 0; -- n, ++ p1, ++ p2) {
-        if (pgm_read_byte(p1) < pgm_read_byte(p2))
-            return -1;
-        if (pgm_read_byte(p1) > pgm_read_byte(p2))
-            return 1;
-        if (pgm_read_byte(p1) == 0)
-            return 0;
+		if (pgm_read_byte(p1) >= 65 && pgm_read_byte(p1) <= 92) //p1 is upper case (p2 is always lowercase)
+		{
+			if ((pgm_read_byte(p1)+32) < pgm_read_byte(p2))
+				return -1;
+			if ((pgm_read_byte(p1)+32) > pgm_read_byte(p2))
+				return 1;
+		}
+		else if (pgm_read_byte(p1) == 0) {
+			return 0;
+		}
+		else { //p1 is lowercase
+			if (pgm_read_byte(p1) < pgm_read_byte(p2))
+				return -1;
+			if (pgm_read_byte(p1) > pgm_read_byte(p2))
+				return 1;
+		}            
     }
     return 0;
 }
@@ -227,6 +237,30 @@ inline int8_t is_provided_version_newer(const char *version_string)
         if (ver_gcode[i] > ver_current[i])
             return 1;
     return 0;
+}
+
+bool force_selftest_if_fw_version()
+{
+	//if fw version used before flashing new firmware (fw version currently stored in eeprom) is lower then 3.1.2-RC2, function returns true to force selftest
+
+	uint16_t ver_eeprom[4];
+	uint16_t ver_with_calibration[4] = {3, 1, 2, 4}; //hardcoded 3.1.2-RC2 version
+	bool force_selftest = false;
+
+	ver_eeprom[0] = eeprom_read_word((uint16_t*)EEPROM_FIRMWARE_VERSION_MAJOR);
+	ver_eeprom[1] = eeprom_read_word((uint16_t*)EEPROM_FIRMWARE_VERSION_MINOR);
+	ver_eeprom[2] = eeprom_read_word((uint16_t*)EEPROM_FIRMWARE_VERSION_REVISION);
+	ver_eeprom[3] = eeprom_read_word((uint16_t*)EEPROM_FIRMWARE_VERSION_FLAVOR);
+
+	for (uint8_t i = 0; i < 4; ++i) {
+		if (ver_with_calibration[i] > ver_eeprom[i]) {
+			force_selftest = true;
+			break;
+		}
+		else if (ver_with_calibration[i] < ver_eeprom[i])
+			break;
+	}
+	return force_selftest;
 }
 
 bool show_upgrade_dialog_if_version_newer(const char *version_string)
