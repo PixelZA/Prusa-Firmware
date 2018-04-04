@@ -762,7 +762,7 @@ void factory_reset(char level, bool quiet)
             calibration_status_store(CALIBRATION_STATUS_Z_CALIBRATION);
 			eeprom_write_byte((uint8_t*)EEPROM_WIZARD_ACTIVE, 1); //run wizard
             farm_no = 0;
-			farm_mode == false;
+			farm_mode == 0;
 			eeprom_update_byte((uint8_t*)EEPROM_FARM_MODE, farm_mode);
             EEPROM_save_B(EEPROM_FARM_NUMBER, &farm_no);
                        
