@@ -14,7 +14,7 @@
 #define DEVELOPER
 
 // Printer name
-#define CUSTOM_MENDEL_NAME "Zaribo MK3-320"
+#define CUSTOM_MENDEL_NAME "Zaribo MK3-220"
 
 // Electronics
 #define MOTHERBOARD BOARD_EINSY_1_0a
@@ -61,7 +61,7 @@ const bool Z_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define X_MIN_POS 0
 #define Y_MAX_POS 212.5
 #define Y_MIN_POS -4 //orig -4
-#define Z_MAX_POS 320
+#define Z_MAX_POS 220
 #define Z_MIN_POS 0.15
 
 // Canceled home position

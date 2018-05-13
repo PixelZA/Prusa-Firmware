@@ -6,7 +6,7 @@
  *
  */
 
-#define(length=20) WELCOME_MSG              CUSTOM_MENDEL_NAME " ready."
+#define(length=20) WELCOME_MSG              CUSTOM_MENDEL_NAME " ok."
 #define MSG_SD_INSERTED                     "Card inserted"
 #define MSG_SD_REMOVED                      "Card removed"
 #define MSG_MAIN                            "Main"
