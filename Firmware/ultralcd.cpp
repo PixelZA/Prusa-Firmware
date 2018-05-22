@@ -215,7 +215,7 @@ static void lcd_prepare_menu();
 //static void lcd_move_menu();
 static void lcd_settings_menu();
 static void lcd_calibration_menu();
-#if (LNAG_NUM > 1)
+#if (LANG_NUM > 1)
 static void lcd_language_menu();
 #endif
 static void lcd_control_temperature_menu();
