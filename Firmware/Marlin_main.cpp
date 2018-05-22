@@ -324,8 +324,6 @@ unsigned int custom_message_type;
 unsigned int custom_message_state;
 char snmm_filaments_used = 0;
 
-float distance_from_min[2];
-
 bool fan_state[2];
 int fan_edge_counter[2];
 int fan_speed[2];
@@ -1447,6 +1445,7 @@ void fsensor_init() {
 	int pat9125 = pat9125_init();
 	printf_P(PSTR("PAT9125_init:%d\n"), pat9125);
 	uint8_t fsensor = eeprom_read_byte((uint8_t*)EEPROM_FSENSOR);
+     filament_autoload_enabled=eeprom_read_byte((uint8_t*)EEPROM_FSENS_AUTOLOAD_ENABLED);
 	if (!pat9125)
 	{
 		fsensor = 0; //disable sensor
