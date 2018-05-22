@@ -837,7 +837,7 @@ void lcd_splash()
 //	lcd_print_at_PGM(0, 2, PSTR("    3D  Printers    "));
 //	lcd.print_P(PSTR("\x1b[1;3HOriginal Prusa\x1b[2;4H3D  Printers"));
 //    fputs_P(PSTR(ESC_2J ESC_H(1,1) "Original Prusa i3" ESC_H(3,2) "Prusa Research"), lcdout);
-    fputs_P(PSTR(ESC_2J ESC_H(1,1) "Zaribo 320" ESC_H(3,2) "Zaribo Research"), lcdout);
+    fputs_P(PSTR(ESC_2J ESC_H(1,1) "Zaribo MK3-320" ESC_H(3,2) "Zaribo Research"), lcdout);
 }
 
 void factory_reset() 
