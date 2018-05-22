@@ -931,7 +931,7 @@ const char * const MSG_MAX_LANG_TABLE[LANG_NUM] PROGMEM = {
 };
 
 const char MSG_MEASURED_OFFSET_EN[] PROGMEM = "[0;0] point offset";
-const char * const MSG_MEASURED_OFFSET_LANG_TABLE[1] PROGMEM = {
+const char * const MSG_MEASURED_OFFSET_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_MEASURED_OFFSET_EN
 };
 
